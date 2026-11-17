@@ -3,7 +3,7 @@
 .import/
 *.translation
 export.cfg
-export_presets.cfg
+# Presets sem credenciais são versionados; segredos ficam em .godot/.
 .mono/
 /game/build/
 /game/dist/

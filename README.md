@@ -10,16 +10,42 @@ Repositório do jogo Godot e de seu backend Python.
 
 ## Execução
 
-O repositório está na etapa de estruturação. Ainda não existem um projeto
-`game/project.godot`, dependências Python ou um servidor executável.
-Os passos abaixo preparam o ambiente para as próximas implementações.
+O jogo possui um menu e uma tela inicial com navegação. O backend ainda não
+possui dependências ou servidor executável.
 
 ### Jogo
 
-Instale o Godot. A versão será definida quando o projeto for criado.
-Quando `game/project.godot` estiver disponível, importe esse arquivo pelo
-gerenciador de projetos do Godot, abra o projeto e pressione **F6** para
-executar a cena atual ou **F5** para executar a cena principal configurada.
+Instale o **Godot 4.7.2 Standard** (GDScript). Importe `game/project.godot`
+pelo gerenciador de projetos e pressione **F5**, ou execute na raiz:
+
+```sh
+godot --path game
+```
+
+Use **Iniciar** para abrir a tela do jogo e **Voltar ao menu** para retornar.
+Os botões também aceitam navegação por Tab e ativação por Enter/Espaço.
+O projeto 2D usa o renderizador Compatibility, base 1280×720 e escala
+proporcional com barras nas proporções diferentes de 16:9.
+
+### Testar e exportar para HTML5
+
+Instale os templates de exportação **4.7.2** no Godot em **Editor → Manage
+Export Templates**. Na raiz do repositório:
+
+```sh
+godot --headless --path game --editor --import --quit
+godot --headless --path game --script res://tests/navigation_test.gd
+mkdir -p game/build/web
+godot --headless --path game --export-release Web build/web/index.html
+python3 -m http.server 8000 --directory game/build/web
+```
+
+Abra `http://localhost:8000` em um navegador com WebGL 2.0. O servidor deve
+continuar ativo durante o teste. Não abra o HTML diretamente via `file://`.
+No Windows, crie `game/build/web` pelo explorador ou PowerShell e use `py`
+no lugar de `python3`.
+
+Consulte [configuração e validação do Godot](docs/GODOT.md) para detalhes.
 
 ### Backend
 
