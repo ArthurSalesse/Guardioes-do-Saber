@@ -1,10 +1,15 @@
 # Documentação de Requisitos e Conteúdo Pedagógico
 
-**Projeto:** Guardiões do Saber  
-**Versão:** 1.0 — MVP  
-**Status:** Planejamento inicial  
-**Público-alvo:** Crianças de 7 a 10 anos  
-**Plataforma:** Web (computadores)  
+**Projeto:** Guardiões do Saber
+
+**Versão:** 1.0 — MVP
+
+**Status:** Planejamento inicial
+
+**Público-alvo:** Crianças de 7 a 10 anos
+
+**Plataforma:** Web (computadores)
+
 **Gênero:** Aventura 2D top-down com desafios educativos
 
 Este documento registra os requisitos planejados para o MVP, conforme o
