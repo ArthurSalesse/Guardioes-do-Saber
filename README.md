@@ -38,6 +38,11 @@ abrir diálogos. Use **E** ou **Próximo** para avançar, **Esc** ou **Fechar**
 para encerrar e interaja novamente para reler desde o início. O personagem
 fica parado durante a leitura. Os bloqueios aguardam a integração das missões educativas;
 ler uma orientação não conclui desafios. Consulte o [mapa e progresso](docs/MAPA.md).
+O painel **Suas missões** mostra os estados. Conversar com o personagem da
+missão disponível a inicia. Ao voltar ao menu, **Continuar aventura** preserva
+esse progresso; **Recomeçar aventura** limpa os estados e eventos. O progresso
+vale enquanto o jogo estiver aberto e é perdido ao recarregar a página.
+Consulte o [gerenciador de missões](docs/MISSOES.md).
 Os botões também aceitam navegação por Tab e ativação por Enter/Espaço.
 O projeto 2D usa o renderizador Compatibility, base 1280×720 e escala
 proporcional com barras nas proporções diferentes de 16:9.
@@ -53,6 +58,7 @@ godot --headless --path game --script res://tests/navigation_test.gd
 godot --headless --path game --script res://tests/movement_test.gd
 godot --headless --path game --script res://tests/forest_test.gd
 godot --headless --path game --script res://tests/dialogue_test.gd
+godot --headless --path game --script res://tests/mission_test.gd
 mkdir -p game/build/web
 godot --headless --path game --export-release Web build/web/index.html
 python3 -m http.server 8000 --directory game/build/web

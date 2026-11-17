@@ -62,4 +62,17 @@ theme_override_font_sizes/font_size = 24
 autowrap_mode = 2
 text = "Procure os sinais de ! e pressione E para ler."
 
+
+[node name="MissionStatus" type="PanelContainer" parent="HUD"]
+offset_left = 770.0
+offset_top = 24.0
+offset_right = 1256.0
+offset_bottom = 190.0
+mouse_filter = 2
+
+[node name="Text" type="Label" parent="HUD/MissionStatus"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 2
+
 [node name="Dialogue" parent="HUD" instance=ExtResource("4")]

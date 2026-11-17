@@ -4,6 +4,8 @@ signal navigate(route: StringName)
 
 
 func _ready() -> void:
+	MissionManager.changed.connect(_update_mission_status)
+	_update_mission_status()
 	$World.dialogue_requested.connect($HUD/Dialogue.show_dialogue)
 	$HUD/Dialogue.opened.connect(func(): _set_dialogue_active(true))
 	$HUD/Dialogue.closed.connect(func(): _set_dialogue_active(false))
@@ -21,3 +23,11 @@ func _set_dialogue_active(active: bool) -> void:
 	$World/Player.controls_enabled = not active
 	$HUD/Panel/Content/Back.disabled = active
 	$HUD/Message.visible = not active
+
+
+func _update_mission_status() -> void:
+	var lines: PackedStringArray = ["Suas missões"]
+	var labels := ["Não iniciada", "Ativa", "Concluída"]
+	for mission in MissionManager.ORDER:
+		lines.append("%s · %s" % [MissionManager.TITLES[mission], labels[MissionManager.get_state(mission)]])
+	$HUD/MissionStatus/Text.text = "\n".join(lines)

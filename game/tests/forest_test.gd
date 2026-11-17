@@ -38,6 +38,7 @@ func reachable(world: Node, target: Vector2i) -> bool:
 
 
 func run() -> void:
+	root.get_node("MissionManager").new_session()
 	var game = load("res://scenes/game.tscn").instantiate()
 	root.add_child(game)
 	var world = game.get_node("World")
@@ -76,6 +77,7 @@ func run() -> void:
 	await ticks(35)
 	Input.action_release("move_right")
 	check(player.position.x <= 1266.1, "Portão da caverna tem colisão antes do moinho")
+	check(progress.start_mission(&"mill"), "Inicia moinho")
 	check(progress.complete_mission(&"mill"), "Conclui moinho")
 	await ticks(4)
 	check(reachable(world, Vector2i(51, 17)), "Caverna acessível após moinho")
@@ -83,12 +85,15 @@ func run() -> void:
 	await ticks(30)
 	Input.action_release("move_right")
 	check(player.position.x > 1312, "Colisão do portão removida")
+	check(progress.start_mission(&"crystal"), "Inicia cristal")
 	check(progress.complete_mission(&"crystal"), "Conclui sequência")
 	game.queue_free()
 	await process_frame
 	var fresh = load("res://scenes/forest.tscn").instantiate()
 	root.add_child(fresh)
-	check(not fresh.progress.is_completed(&"bridge"), "Nova aventura começa bloqueada")
+	check(fresh.progress.is_completed(&"bridge"), "Recriar mapa preserva progresso da sessão")
+	root.get_node("MissionManager").new_session()
+	check(not fresh.progress.is_completed(&"bridge"), "Recomeçar limpa progresso")
 	fresh.queue_free()
 	await process_frame
 	print("Forest: %s" % ("PASS" if failures == 0 else "FAIL"))

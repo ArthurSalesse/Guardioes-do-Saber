@@ -42,8 +42,11 @@ de progresso no backend.
 
 ## Integração de progresso
 
-`World/Progress` expõe `is_completed(id)` e `complete_mission(id)`. Os futuros
-controladores devem chamar `complete_mission` apenas após validar o desafio:
+`World/Progress` delega para o autoload `MissionManager`. Expõe
+`is_completed(id)`, `start_mission(id)` e `complete_mission(id)`. A interação
+com o ponto de uma missão disponível inicia essa missão. Os futuros
+controladores devem chamar `complete_mission` apenas após validar o desafio
+de uma missão ativa:
 
 ```gdscript
 # Exemplo de integração futura, após resposta validada do desafio da ponte:
@@ -51,7 +54,8 @@ var accepted: bool = $World/Progress.complete_mission(&"bridge")
 ```
 
 A ordem é `bridge` → `mill` → `crystal`. IDs desconhecidos, conclusões
-repetidas e conclusões fora de ordem retornam `false`, sem emitir mudanças.
+repetidas e conclusões sem início retornam `false`, sem emitir mudanças.
+Uma missão só pode iniciar após a conclusão da anterior.
 Uma conclusão aceita emite `changed` e atualiza os tiles visuais e as colisões:
 
 - `bridge`: remove a barreira sobre a ponte e permite chegar ao moinho.
@@ -59,10 +63,11 @@ Uma conclusão aceita emite `changed` e atualiza os tiles visuais e as colisões
 - `crystal`: registra a conclusão final, sem adicionar outro bloqueio.
 
 As atualizações de colisão do TileMapLayer são aplicadas pelo motor ao final
-do frame. O estado vive nesta instância da aventura; voltar ao menu e iniciar
-novamente restaura os bloqueios. Não há botão, tecla ou interação que conclua
+do frame. Desde a issue #8, o estado vive no MissionManager e sobrevive à
+troca de cenas. Voltar ao menu e continuar restaura as passagens já abertas;
+recomeçar explicitamente limpa os estados e fecha os bloqueios. Não há botão, tecla ou interação que conclua
 automaticamente missões. Os testes chamam essa API para verificar as passagens
-antes da implementação dos puzzles.
+antes da implementação dos puzzles. Consulte [estados e eventos](MISSOES.md).
 
 ## Validação
 
@@ -75,7 +80,8 @@ godot --headless --path game --script res://tests/navigation_test.gd
 
 O teste do mapa verifica dimensões, regiões alcançáveis por busca nas células,
 interação próxima/distante, ordem de missões, repetição de conclusão, colisão
-real antes/depois dos desbloqueios e estado inicial de uma nova aventura.
+real antes/depois dos desbloqueios, continuidade ao recriar o mapa e limpeza
+ao recomeçar uma aventura.
 Os testes de movimento e navegação continuam cobrindo o personagem e o menu.
 
 Na implementação da issue #6 passaram os três testes no Godot 4.7.2 e a

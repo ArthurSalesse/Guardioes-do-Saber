@@ -128,6 +128,8 @@ func interact() -> bool:
 	var player := get_node_or_null("Player") as CharacterBody2D
 	if not player or not active_point.contains_player(player):
 		return false
+	# A leitura inicia a missão disponível, sem concluir seu desafio.
+	progress.start_mission(active_point.point_id)
 	interaction_requested.emit(active_point.point_id)
 	var pages: Array[Resource] = active_point.dialogue_pages.duplicate()
 	var text := ""

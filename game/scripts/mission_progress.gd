@@ -1,21 +1,24 @@
 extends Node
-## Integração para os futuros controladores de missões; somente nesta sessão.
+## Adaptador do mapa para o gerenciador que persiste durante a sessão.
 
 signal changed
-const ORDER: Array[StringName] = [&"bridge", &"mill", &"crystal"]
-var _completed: Array[StringName] = []
+
+
+func _ready() -> void:
+	MissionManager.changed.connect(_on_changed)
+
+
+func _on_changed() -> void:
+	changed.emit()
 
 
 func is_completed(mission: StringName) -> bool:
-	return mission in _completed
+	return MissionManager.is_completed(mission)
+
+
+func start_mission(mission: StringName) -> bool:
+	return MissionManager.start_mission(mission)
 
 
 func complete_mission(mission: StringName) -> bool:
-	if mission not in ORDER or mission in _completed:
-		return false
-	var index := ORDER.find(mission)
-	if index > 0 and not is_completed(ORDER[index - 1]):
-		return false
-	_completed.append(mission)
-	changed.emit()
-	return true
+	return MissionManager.complete_mission(mission)
