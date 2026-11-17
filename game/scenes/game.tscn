@@ -1,10 +1,26 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/forest.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3"]
 
 [ext_resource type="PackedScene" path="res://scenes/dialogue.tscn" id="4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_compact_hud"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.094, 0.239, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.435, 0.533, 0.376, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -24,29 +40,31 @@ position = Vector2(288, 544)
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="Panel" type="PanelContainer" parent="HUD"]
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 550.0
-offset_bottom = 160.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 310.0
+offset_bottom = 112.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_compact_hud")
 
 [node name="Content" type="VBoxContainer" parent="HUD/Panel"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 18
 text = "Floresta dos Números"
 
 [node name="Instructions" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 14
 text = "Explore com as setas ou WASD."
 
 [node name="Back" type="Button" parent="HUD/Panel/Content"]
-custom_minimum_size = Vector2(280, 48)
+custom_minimum_size = Vector2(120, 28)
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 14
 text = "Voltar ao menu"
 
 [node name="Message" type="Label" parent="HUD"]
@@ -64,15 +82,16 @@ text = "Procure os sinais de ! e pressione E para ler."
 
 
 [node name="MissionStatus" type="PanelContainer" parent="HUD"]
-offset_left = 770.0
-offset_top = 24.0
-offset_right = 1256.0
-offset_bottom = 190.0
+offset_left = 934.0
+offset_top = 16.0
+offset_right = 1264.0
+offset_bottom = 110.0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_compact_hud")
 
 [node name="Text" type="Label" parent="HUD/MissionStatus"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 14
 autowrap_mode = 2
 
 [node name="Dialogue" parent="HUD" instance=ExtResource("4")]

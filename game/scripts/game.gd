@@ -4,6 +4,18 @@ signal navigate(route: StringName)
 
 
 func _ready() -> void:
+	var art_theme := preload("res://scripts/art_theme.gd").create()
+	for control in $HUD.get_children():
+		if control is Control:
+			control.theme = art_theme
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var style := $HUD/Panel/Content/Back.get_theme_stylebox(state).duplicate() as StyleBoxFlat
+		style.content_margin_left = 10
+		style.content_margin_right = 10
+		style.content_margin_top = 5
+		style.content_margin_bottom = 5
+		style.shadow_size = 0
+		$HUD/Panel/Content/Back.add_theme_stylebox_override(state, style)
 	MissionManager.changed.connect(_update_mission_status)
 	_update_mission_status()
 	$World.dialogue_requested.connect($HUD/Dialogue.show_dialogue)

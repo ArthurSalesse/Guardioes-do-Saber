@@ -13,6 +13,7 @@ const TITLES := {
 	&"mill": "O Moinho Encantado",
 	&"crystal": "O Cristal Perdido",
 }
+var avatar: StringName = &"boy"
 var session_id := ""
 var _states: Dictionary = {}
 var _events: Array[Dictionary] = []
@@ -23,6 +24,7 @@ func _ready() -> void:
 
 
 func new_session() -> void:
+	avatar = &"boy"
 	session_id = Crypto.new().generate_random_bytes(16).hex_encode()
 	_states.clear()
 	_events.clear()

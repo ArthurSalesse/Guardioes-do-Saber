@@ -24,7 +24,15 @@ func run() -> void:
 		main.get_node("Menu/Center/Content/Start").pressed.emit()
 		await process_frame
 		await process_frame
-		check(main.current_route == &"game", "Iniciar deve abrir o jogo")
+		check(main.current_route == &"avatar_select", "Iniciar deve abrir a escolha de avatar")
+		var avatar_id: StringName = &"girl" if iteration % 2 == 0 else &"boy"
+		var choice := "Girl" if avatar_id == &"girl" else "Boy"
+		main.get_node("AvatarSelect/Center/Content/Choices/" + choice).pressed.emit()
+		main.get_node("AvatarSelect/Center/Content/Begin").pressed.emit()
+		await process_frame
+		await process_frame
+		check(main.current_route == &"game", "Confirmar avatar deve abrir o jogo")
+		check(main.get_node("Game/World/Player").avatar == avatar_id, "Personagem deve usar o avatar escolhido")
 		check(main.get_child_count() == 1, "Deve existir apenas uma tela ativa")
 		main.get_node("Game/HUD/Panel/Content/Back").pressed.emit()
 		await process_frame

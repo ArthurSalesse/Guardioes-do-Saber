@@ -3,6 +3,7 @@ extends Node
 
 const ROUTES := {
 	"menu": preload("res://scenes/menu.tscn"),
+	"avatar_select": preload("res://scenes/avatar_select.tscn"),
 	"game": preload("res://scenes/game.tscn"),
 }
 
@@ -23,6 +24,7 @@ func _show(route: StringName) -> void:
 		remove_child(_screen)
 		_screen.queue_free()
 	_screen = ROUTES[route].instantiate()
+	_screen.theme = preload("res://scripts/art_theme.gd").create()
 	_screen.navigate.connect(go_to)
 	add_child(_screen)
 	current_route = route

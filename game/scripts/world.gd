@@ -47,6 +47,10 @@ func _make_tileset() -> TileSet:
 	for index in range(7):
 		var coords := Vector2i(index, 0)
 		atlas.create_tile(coords)
+		if index == GRASS:
+			for variant in range(1, 5):
+				atlas.create_alternative_tile(coords, variant)
+				atlas.get_tile_data(coords, variant).modulate = Color(1.0 - variant * 0.018, 1.0 - variant * 0.012, 1.0 - variant * 0.008)
 		if index in [WATER, TREE, ROCK, GATE]:
 			var data := atlas.get_tile_data(coords, 0)
 			data.set_collision_polygons_count(0, 1)
@@ -60,7 +64,7 @@ func _build_map() -> void:
 		for y in range(34):
 			var cell := Vector2i(x, y)
 			var path := y in [16, 17] or (x in [32, 33] and y >= 12 and y <= 17)
-			ground.set_cell(cell, 0, Vector2i(PATH if path else GRASS, 0))
+			ground.set_cell(cell, 0, Vector2i(PATH if path else GRASS, 0), 0 if path else (x * 7 + y * 11 + x * y) % 5)
 			if x == 0 or x == 59 or y == 0 or y == 33:
 				obstacles.set_cell(cell, 0, Vector2i(TREE, 0))
 			elif x in [20, 21]:
@@ -146,13 +150,53 @@ func interact() -> bool:
 
 
 func _draw() -> void:
-	# Marcos visuais originais: moinho, caverna e portal de passagem.
-	draw_rect(Rect2(1008, 288, 96, 96), Color("d6ba8a"))
-	draw_colored_polygon(PackedVector2Array([Vector2(992, 288), Vector2(1056, 240), Vector2(1120, 288)]), Color("835644"))
-	for offset in [Vector2(50, 50), Vector2(-50, 50)]:
-		draw_line(Vector2(1056, 304) - offset, Vector2(1056, 304) + offset, Color("f2e5bd"), 10)
-	draw_circle(Vector2(1056, 304), 10, Color("705744"))
-	draw_circle(Vector2(1696, 448), 76, Color("7d8b91"))
-	draw_rect(Rect2(1620, 448, 152, 64), Color("7d8b91"))
-	draw_circle(Vector2(1696, 466), 42, Color("26343b"))
-	draw_rect(Rect2(1654, 466, 84, 46), Color("26343b"))
+	# Pequenos detalhes determinísticos: não alteram colisões ou objetivos.
+	for i in range(320):
+		var cell := Vector2i(2 + (i * 17) % 56, 2 + (i * 11) % 30)
+		if cell.y in [15, 16, 17, 18] or cell.x in [20, 21, 40] or obstacles.get_cell_source_id(cell) != -1:
+			continue
+		var pos := Vector2(cell * 32) + Vector2(8 + i % 15, 10 + i % 12)
+		if i % 4 == 0:
+			draw_line(pos, pos + Vector2(0, -6), Color("80a666"), 1, true)
+			draw_circle(pos + Vector2(0, -7), 2.1, Color("e6cb84") if i % 8 == 0 else Color("c9a7ae"))
+		else:
+			draw_arc(pos, 4, PI, TAU, 6, Color("58845a"), 1, true)
+	# Moinho de pedra e madeira com telhado, janelas e velas.
+	draw_set_transform(Vector2(1056, 375), 0, Vector2(1, 0.3))
+	draw_circle(Vector2.ZERO, 73, Color(0.04, 0.12, 0.1, 0.3))
+	draw_set_transform(Vector2.ZERO)
+	draw_rect(Rect2(1011, 284, 90, 100), Color("bda57b"))
+	draw_rect(Rect2(1017, 290, 15, 90), Color("d9c79b"))
+	for row in range(5):
+		draw_line(Vector2(1011, 300 + row * 17), Vector2(1101, 300 + row * 17), Color("a78d68"), 1)
+	draw_colored_polygon(PackedVector2Array([Vector2(996, 287), Vector2(1056, 234), Vector2(1116, 287)]), Color("643f37"))
+	for row in range(4):
+		var y := 252.0 + row * 9
+		var half := (y - 234) * 1.13
+		draw_line(Vector2(1056 - half, y), Vector2(1056 + half, y), Color("a1694a"), 3, true)
+	draw_style_box(preload("res://scripts/art_theme.gd").panel(Color("304d49"), Color("e0c38b"), 12), Rect2(1044, 343, 24, 41))
+	for x in [1026, 1078]:
+		draw_rect(Rect2(x, 307, 13, 20), Color("304d49"))
+		draw_line(Vector2(x + 6, 307), Vector2(x + 6, 327), Color("dfc38a"), 2)
+	for angle in [PI / 4, PI * 3 / 4, PI * 5 / 4, PI * 7 / 4]:
+		var arm := Vector2.from_angle(angle)
+		var side := arm.orthogonal()
+		draw_line(Vector2(1056, 304), Vector2(1056, 304) + arm * 68, Color("684e39"), 5, true)
+		var sail := PackedVector2Array([Vector2(1056,304) + arm * 18, Vector2(1056,304) + arm * 64, Vector2(1056,304) + arm * 64 + side * 15, Vector2(1056,304) + arm * 18 + side * 10])
+		draw_colored_polygon(sail, Color("eee1b5"))
+		draw_polyline(sail, Color("bda578"), 1, true)
+	draw_circle(Vector2(1056, 304), 9, Color("73563e"))
+	draw_circle(Vector2(1056, 304), 4, Color("d9bb77"))
+	# Entrada rochosa e cristais luminosos.
+	draw_set_transform(Vector2(1696, 509), 0, Vector2(1, 0.25))
+	draw_circle(Vector2.ZERO, 90, Color(0.04, 0.12, 0.1, 0.35))
+	draw_set_transform(Vector2.ZERO)
+	draw_colored_polygon(PackedVector2Array([Vector2(1616,512),Vector2(1622,427),Vector2(1656,380),Vector2(1707,366),Vector2(1758,405),Vector2(1776,512)]), Color("637b76"))
+	draw_colored_polygon(PackedVector2Array([Vector2(1622,427),Vector2(1656,380),Vector2(1707,366),Vector2(1681,422),Vector2(1640,451)]), Color("91a395"))
+	draw_colored_polygon(PackedVector2Array([Vector2(1707,366),Vector2(1758,405),Vector2(1776,512),Vector2(1730,486),Vector2(1716,415)]), Color("455f60"))
+	draw_circle(Vector2(1696, 463), 44, Color("112f36"))
+	draw_rect(Rect2(1652, 463, 88, 49), Color("112f36"))
+	for pos in [Vector2(1640, 466), Vector2(1748, 481), Vector2(1728, 420)]:
+		draw_circle(pos, 18, Color(0.35, 0.85, 0.8, 0.08))
+		draw_colored_polygon(PackedVector2Array([pos + Vector2(0,-17),pos + Vector2(7,-5),pos + Vector2(4,9),pos + Vector2(-5,7),pos + Vector2(-7,-5)]), Color("70c9bd"))
+		draw_line(pos + Vector2(0,-14), pos + Vector2(0,6), Color("c0eed7"), 2, true)
