@@ -1,0 +1,46 @@
+# Godot 4 e Godot 3: caches e dados gerados pelo editor
+.godot/
+.import/
+*.translation
+export.cfg
+# Presets sem credenciais são versionados; segredos ficam em .godot/.
+.mono/
+/game/build/
+/game/dist/
+
+# Python: bytecode, ambientes e pacotes gerados
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.Python
+*.egg-info/
+.eggs/
+/backend/build/
+/backend/dist/
+
+# Testes e análise Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Configuração local e credenciais
+.env
+.env.*
+!.env.example
+
+# Editor e sistema operacional
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
