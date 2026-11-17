@@ -20,6 +20,7 @@ env/
 .eggs/
 /backend/build/
 /backend/dist/
+/backend/staticfiles/
 
 # Testes e análise Python
 .pytest_cache/

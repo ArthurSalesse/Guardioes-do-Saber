@@ -10,8 +10,8 @@ Repositório do jogo Godot e de seu backend Python.
 
 ## Execução
 
-O jogo possui um menu e uma tela inicial com navegação. O backend ainda não
-possui dependências ou servidor executável.
+O jogo possui um menu e uma tela inicial com navegação. O backend Django REST
+Framework utiliza PostgreSQL e oferece um endpoint de saúde.
 
 ### Jogo
 
@@ -49,11 +49,17 @@ Consulte [configuração e validação do Godot](docs/GODOT.md) para detalhes.
 
 ### Backend
 
-Instale Python 3 e crie um ambiente virtual a partir da raiz do repositório:
+Instale **Python 3.12 ou superior** (validado com 3.14), PostgreSQL 17 ou Docker
+com Compose. Na raiz do repositório:
 
 ```sh
 python3 -m venv backend/.venv
 source backend/.venv/bin/activate
+python -m pip install -r backend/requirements.txt
+cp backend/.env.example backend/.env
+docker compose --env-file backend/.env -f backend/compose.yaml up -d --wait
+python backend/manage.py migrate
+python backend/manage.py runserver 127.0.0.1:8001
 ```
 
 No Windows (PowerShell):
@@ -61,10 +67,31 @@ No Windows (PowerShell):
 ```powershell
 py -m venv backend/.venv
 backend\.venv\Scripts\Activate.ps1
+python -m pip install -r backend/requirements.txt
+Copy-Item backend/.env.example backend/.env
+docker compose --env-file backend/.env -f backend/compose.yaml up -d --wait
+python backend/manage.py migrate
+python backend/manage.py runserver 127.0.0.1:8001
 ```
 
-Ainda não há pacotes para instalar nem comando de inicialização do backend.
-Essas instruções serão adicionadas junto com sua implementação.
+O Compose inicia apenas o banco. Se já tiver PostgreSQL, configure suas
+credenciais em `backend/.env` e pule o comando do Compose. Use um banco vazio
+dedicado ao projeto. O jogo web permanece na porta 8000 e a API usa 8001.
+
+Confira `http://127.0.0.1:8001/api/health/`: retorna HTTP 200 com
+`{"status":"ok","database":"ok"}` quando o banco responde e HTTP 503 quando
+está indisponível.
+
+Com o ambiente virtual ativo, valide com:
+
+```sh
+python backend/manage.py check
+python backend/manage.py test health
+```
+
+Os testes de integração precisam de PostgreSQL e permissão de criar o banco
+de teste. Consulte [configuração do backend](docs/BACKEND.md) para variáveis,
+CORS e testes sem banco.
 
 ## Contribuição
 
