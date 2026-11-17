@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="224" height="32" viewBox="0 0 224 32">
+<rect width="32" height="32" fill="#426947"/><path d="M5 24l3-5m13-7l3-5" stroke="#608453" stroke-width="2"/>
+<rect x="32" width="32" height="32" fill="#b49b70"/><path d="M36 9h5m13 16h6" stroke="#c9b084" stroke-width="2"/>
+<rect x="64" width="32" height="32" fill="#367f9c"/><path d="M66 9q6-4 12 0t14 0M66 23q6-4 12 0t14 0" fill="none" stroke="#79bccc" stroke-width="2"/>
+<rect x="96" width="32" height="32" fill="#35543b"/><rect x="109" y="19" width="6" height="13" fill="#72523e"/><circle cx="112" cy="14" r="14" fill="#254d37"/><circle cx="109" cy="11" r="9" fill="#3a704b"/>
+<rect x="128" width="32" height="32" fill="#526473"/><path d="M131 29l3-23 14-4 10 12-2 15z" fill="#7e9197"/><path d="M136 9l10-3 7 9" fill="none" stroke="#b0bdbc" stroke-width="2"/>
+<rect x="160" width="32" height="32" fill="#ad7848"/><path d="M160 2h32m-32 9h32m-32 10h32m-32 9h32" stroke="#654f3a" stroke-width="2"/>
+<rect x="192" width="32" height="32" fill="#705e48"/><path d="M196 0v32m12-32v32m12-32v32M192 7h32m-32 18h32" stroke="#d7b77c" stroke-width="4"/>
+</svg>
