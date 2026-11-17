@@ -8,6 +8,14 @@ Repositório do jogo Godot e de seu backend Python.
 - `backend/`: código e dependências do backend Python.
 - `docs/`: documentação técnica e de contribuição.
 
+## Requisitos do MVP
+
+O MVP planejado é uma aventura 2D top-down para crianças de 7 a 10 anos,
+ambientada na Floresta dos Números, com três missões de adição e subtração.
+Consulte a [documentação de requisitos e conteúdo pedagógico](docs/REQUISITOS.md)
+para escopo, missões, eventos, indicadores, acessibilidade e privacidade.
+O mapeamento definitivo da BNCC e a aprovação da equipe permanecem pendentes.
+
 ## Execução
 
 O jogo possui um menu e uma tela inicial com navegação. O backend Django REST
