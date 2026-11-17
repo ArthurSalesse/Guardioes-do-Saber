@@ -34,7 +34,7 @@ func run() -> void:
 				keys.append(event.physical_keycode)
 		check(binding[1] in keys and binding[2] in keys, "Atalhos físicos: " + binding[0])
 	for action in ["move_left", "move_right", "move_up", "move_down"]:
-		player.position = Vector2(960, 540)
+		player.position = Vector2(288, 544)
 		var start: Vector2 = player.position
 		Input.action_press(action)
 		await ticks(12)
@@ -46,16 +46,16 @@ func run() -> void:
 		await ticks(2)
 		check(player.velocity == Vector2.ZERO and not player.walking, "Parada ao soltar")
 		check(player.animation_time == 0, "Animação ociosa")
-	player.position = Vector2(960, 540)
+	player.position = Vector2(288, 544)
 	Input.action_press("move_right")
 	Input.action_press("move_down")
 	await ticks(12)
-	check(is_equal_approx(player.position.y, 540), "Duas teclas não geram diagonal")
+	check(is_equal_approx(player.position.y, 544), "Duas teclas não geram diagonal")
 	check(is_equal_approx(player.velocity.length(), player.speed), "Sem ganho de velocidade")
 	Input.action_release("move_down")
-	# O obstáculo à direita começa em x=1160; o raio do jogador é 14.
-	await ticks(80)
-	check(player.position.x <= 1146.1, "Colisão com obstáculo")
+	# A ponte bloqueada começa em x=640; o raio do jogador é 14.
+	await ticks(110)
+	check(player.position.x <= 626.1, "Colisão com obstáculo")
 	check(not player.walking, "Parado contra parede não anima caminhada")
 	Input.action_release("move_right")
 	for sample in [
@@ -69,7 +69,7 @@ func run() -> void:
 		await ticks(60)
 		Input.action_release(sample[1])
 		check(player.position.x >= 45.9 and player.position.x <= 1874.1, "Limites horizontais")
-		check(player.position.y >= 35.9 and player.position.y <= 1024.1, "Limites verticais")
+		check(player.position.y >= 35.9 and player.position.y <= 1032.1, "Limites verticais")
 		camera.force_update_scroll()
 		var center := camera.get_screen_center_position()
 		var half := root.get_visible_rect().size / 2

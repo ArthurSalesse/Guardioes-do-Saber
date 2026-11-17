@@ -31,8 +31,11 @@ godot --path game
 ```
 
 Use **Iniciar** para abrir a tela do jogo e **Voltar ao menu** para retornar.
-Movimente o guardião com **WASD** ou **setas**, em quatro direções. O cenário
-possui obstáculos e bordas sólidas, com câmera acompanhando o personagem.
+Movimente o guardião com **WASD** ou **setas**, em quatro direções. A Floresta
+dos Números possui clareira, ponte, moinho e caverna, com colisões e câmera
+acompanhando o personagem. Aproxime-se dos sinais **!** e pressione **E** para
+ler orientações. Os bloqueios aguardam a integração das missões educativas;
+ler uma orientação não conclui desafios. Consulte o [mapa e progresso](docs/MAPA.md).
 Os botões também aceitam navegação por Tab e ativação por Enter/Espaço.
 O projeto 2D usa o renderizador Compatibility, base 1280×720 e escala
 proporcional com barras nas proporções diferentes de 16:9.
@@ -46,6 +49,7 @@ Export Templates**. Na raiz do repositório:
 godot --headless --path game --editor --import --quit
 godot --headless --path game --script res://tests/navigation_test.gd
 godot --headless --path game --script res://tests/movement_test.gd
+godot --headless --path game --script res://tests/forest_test.gd
 mkdir -p game/build/web
 godot --headless --path game --export-release Web build/web/index.html
 python3 -m http.server 8000 --directory game/build/web

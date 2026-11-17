@@ -16,6 +16,7 @@ do navegador, mantendo essa política de proporção.
 - `scenes/main.tscn`: ponto de entrada com o controlador `scripts/navigation.gd`.
 - `scenes/menu.tscn`: título e botão Iniciar.
 - `scenes/game.tscn`: área de exploração com `World`, personagem e HUD.
+- `scenes/forest.tscn`: mapa com TileMapLayer, progresso e pontos de interação.
 - `scenes/player.tscn`: personagem reutilizável com CharacterBody2D e Camera2D.
 
 As telas emitem `navigate` com uma rota (`menu` ou `game`). O controlador
@@ -33,9 +34,9 @@ o maior eixo prevalece e empates priorizam o horizontal. Não há diagonal nem
 aumento de velocidade. Teclas opostas no mesmo eixo se anulam.
 
 O personagem usa modo de movimento flutuante e colisor circular nos pés.
-A camada 1 contém cenário; a camada 2 contém o jogador. O cenário provisório
-tem 1920×1080 unidades, bordas de 32 unidades e quatro obstáculos. O script
-`world.gd` usa os mesmos retângulos para desenho e colisão.
+A camada 1 contém cenário; a camada 2 contém o jogador. Desde a issue #6,
+o mapa usa tiles de 32 unidades, bordas sólidas, bosques, rio e barreiras de
+progresso. Consulte [mapa e progresso](MAPA.md) para layout e integração.
 
 A câmera acompanha o jogador, limitada a (0, 0)–(1920, 1080), sem mostrar o
 exterior do cenário na resolução-base. O HUD fica em CanvasLayer, fixo na tela.
