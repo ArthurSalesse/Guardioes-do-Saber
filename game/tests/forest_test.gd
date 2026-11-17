@@ -57,6 +57,7 @@ func run() -> void:
 	await ticks(4)
 	check(world.interact() and events == [&"bridge"], "Interação próxima emite ID da missão")
 	check(not progress.is_completed(&"bridge"), "Interagir não conclui missão")
+	game.get_node("HUD/Dialogue").close_dialogue()
 	player.position = Vector2(160, 800)
 	await ticks(4)
 	check(not world.interact(), "Não interage fora do alcance")

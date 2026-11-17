@@ -30,13 +30,15 @@ possuem colisões; os sinais de interação são atravessáveis.
 Cada sinal usa `scenes/interaction_point.tscn`, uma Area2D com alcance de
 90 unidades, máscara da camada do jogador, título e instrução. O sinal mais
 próximo em alcance é selecionado. O HUD mostra a tecla **E** e o nome do local;
-pressionar E exibe a orientação e emite `interaction_requested(point_id)`.
-Fora do alcance não há interação. A instrução pode ser repetida com E e fica
-visível enquanto o jogador permanece no mesmo ponto.
+pressionar E abre a janela de diálogo e emite `interaction_requested(point_id)`
+e `dialogue_requested(title, pages)`. Um anel branco destaca o ponto ativo,
+além do texto de ação no HUD. Fora do alcance não há interação. A leitura pode
+ser repetida ao fechar o diálogo e interagir novamente com o mesmo ponto.
 
 Os IDs são `welcome`, `bridge`, `mill` e `crystal`. O sinal permite conectar
-futuras telas de missão. Nesta etapa não há puzzles, diálogos completos nem
-persistência de progresso no backend.
+futuras telas de missão. A issue #7 acrescenta os diálogos curtos descritos em
+[Diálogos e instruções](DIALOGOS.md). Nesta etapa não há puzzles nem persistência
+de progresso no backend.
 
 ## Integração de progresso
 

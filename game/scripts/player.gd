@@ -2,6 +2,7 @@ extends CharacterBody2D
 ## Movimento cardinal sem diagonais; animação procedural provisória.
 
 @export var speed := 240.0
+var controls_enabled := true
 var facing := Vector2.DOWN
 var walking := false
 var animation_time := 0.0
@@ -9,6 +10,8 @@ var animation_time := 0.0
 
 func _physics_process(delta: float) -> void:
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if not controls_enabled:
+		direction = Vector2.ZERO
 	# Quatro direções: empates priorizam o eixo horizontal.
 	if absf(direction.x) >= absf(direction.y):
 		direction = Vector2(signf(direction.x), 0)

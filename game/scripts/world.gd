@@ -2,6 +2,7 @@ extends Node2D
 ## Layout determinístico: 60×34 tiles de 32px, três regiões sequenciais.
 
 signal message_changed(text: String)
+signal dialogue_requested(title: String, pages: Array[Resource])
 signal interaction_requested(point_id: StringName)
 
 const GRASS := 0
@@ -18,6 +19,7 @@ const SPAWN := Vector2(288, 544)
 @onready var ground: TileMapLayer = $Ground
 @onready var obstacles: TileMapLayer = $Obstacles
 @onready var progress = $Progress
+var interaction_enabled := true
 var active_point: Area2D
 var _last_prompt := ""
 
@@ -93,6 +95,8 @@ func _apply_progress() -> void:
 
 
 func _process(_delta: float) -> void:
+	if not interaction_enabled:
+		return
 	var player := get_node_or_null("Player") as CharacterBody2D
 	active_point = null
 	var nearest := INF
@@ -102,6 +106,8 @@ func _process(_delta: float) -> void:
 			if point.contains_player(player) and distance < nearest:
 				active_point = point
 				nearest = distance
+	for point in $Points.get_children():
+		point.set_selected(point == active_point)
 	var prompt := "Explore com WASD ou setas. Procure os sinais de !."
 	if active_point:
 		prompt = "[E] " + active_point.title + " · Ler orientação"
@@ -111,21 +117,29 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact") and not event.is_echo():
+	if interaction_enabled and event.is_action_pressed("interact") and not event.is_echo():
 		interact()
 		get_viewport().set_input_as_handled()
 
 
 func interact() -> bool:
-	if not is_instance_valid(active_point):
+	if not interaction_enabled or not is_instance_valid(active_point):
+		return false
+	var player := get_node_or_null("Player") as CharacterBody2D
+	if not player or not active_point.contains_player(player):
 		return false
 	interaction_requested.emit(active_point.point_id)
-	var text: String = active_point.instruction
+	var pages: Array[Resource] = active_point.dialogue_pages.duplicate()
+	var text := ""
 	if active_point.point_id == &"crystal" and not progress.is_completed(&"mill"):
 		text = "Restaure a ponte e o moinho para chegar à caverna."
 	elif active_point.point_id in [&"bridge", &"mill", &"crystal"] and progress.is_completed(active_point.point_id):
 		text = "Esta missão já foi concluída. Continue sua aventura!"
-	message_changed.emit(text)
+	if not text.is_empty() or pages.is_empty():
+		var page = preload("res://scripts/instruction_page.gd").new()
+		page.text = text if not text.is_empty() else active_point.instruction
+		pages = [page]
+	dialogue_requested.emit(active_point.title, pages)
 	return true
 
 

@@ -18,6 +18,8 @@ do navegador, mantendo essa política de proporção.
 - `scenes/game.tscn`: área de exploração com `World`, personagem e HUD.
 - `scenes/forest.tscn`: mapa com TileMapLayer, progresso e pontos de interação.
 - `scenes/player.tscn`: personagem reutilizável com CharacterBody2D e Camera2D.
+- `scenes/dialogue.tscn`: interface reutilizável de leitura e narração opcional;
+  consulte [diálogos e instruções](DIALOGOS.md).
 
 As telas emitem `navigate` com uma rota (`menu` ou `game`). O controlador
 substitui a tela ativa de forma adiada, libera a anterior e ignora rotas
