@@ -18,7 +18,7 @@ O mapeamento definitivo da BNCC e a aprovação da equipe permanecem pendentes.
 
 ## Execução
 
-O jogo possui um menu e uma tela inicial com navegação. O backend Django REST
+O jogo possui um menu e uma área de exploração com personagem e colisões. O backend Django REST
 Framework utiliza PostgreSQL e oferece um endpoint de saúde.
 
 ### Jogo
@@ -31,6 +31,8 @@ godot --path game
 ```
 
 Use **Iniciar** para abrir a tela do jogo e **Voltar ao menu** para retornar.
+Movimente o guardião com **WASD** ou **setas**, em quatro direções. O cenário
+possui obstáculos e bordas sólidas, com câmera acompanhando o personagem.
 Os botões também aceitam navegação por Tab e ativação por Enter/Espaço.
 O projeto 2D usa o renderizador Compatibility, base 1280×720 e escala
 proporcional com barras nas proporções diferentes de 16:9.
@@ -43,6 +45,7 @@ Export Templates**. Na raiz do repositório:
 ```sh
 godot --headless --path game --editor --import --quit
 godot --headless --path game --script res://tests/navigation_test.gd
+godot --headless --path game --script res://tests/movement_test.gd
 mkdir -p game/build/web
 godot --headless --path game --export-release Web build/web/index.html
 python3 -m http.server 8000 --directory game/build/web

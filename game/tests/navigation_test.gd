@@ -26,7 +26,7 @@ func run() -> void:
 		await process_frame
 		check(main.current_route == &"game", "Iniciar deve abrir o jogo")
 		check(main.get_child_count() == 1, "Deve existir apenas uma tela ativa")
-		main.get_node("Game/Center/Content/Back").pressed.emit()
+		main.get_node("Game/HUD/Panel/Content/Back").pressed.emit()
 		await process_frame
 		await process_frame
 		check(main.current_route == &"menu", "Voltar deve abrir o menu")

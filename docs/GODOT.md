@@ -15,12 +15,52 @@ do navegador, mantendo essa política de proporção.
 
 - `scenes/main.tscn`: ponto de entrada com o controlador `scripts/navigation.gd`.
 - `scenes/menu.tscn`: título e botão Iniciar.
-- `scenes/game.tscn`: tela provisória e nó `World` (Node2D) para o futuro jogo.
+- `scenes/game.tscn`: área de exploração com `World`, personagem e HUD.
+- `scenes/player.tscn`: personagem reutilizável com CharacterBody2D e Camera2D.
 
 As telas emitem `navigate` com uma rota (`menu` ou `game`). O controlador
 substitui a tela ativa de forma adiada, libera a anterior e ignora rotas
-inválidas ou repetidas. Cada tela define o foco inicial do seu botão.
-Não há gameplay implementado nesta etapa.
+inválidas ou repetidas. O menu define o foco inicial em Iniciar; no jogo, Tab
+permite selecionar Voltar ao menu. Ainda não há missões implementadas.
+
+## Movimentação e cenário (issue #5)
+
+As ações `move_left`, `move_right`, `move_up` e `move_down` estão no Input Map
+com teclas físicas WASD e setas. A velocidade é de 240 unidades por segundo,
+independente da taxa de quadros, usando `_physics_process` e `move_and_slide`.
+O movimento é cardinal: quando duas direções perpendiculares são pressionadas,
+o maior eixo prevalece e empates priorizam o horizontal. Não há diagonal nem
+aumento de velocidade. Teclas opostas no mesmo eixo se anulam.
+
+O personagem usa modo de movimento flutuante e colisor circular nos pés.
+A camada 1 contém cenário; a camada 2 contém o jogador. O cenário provisório
+tem 1920×1080 unidades, bordas de 32 unidades e quatro obstáculos. O script
+`world.gd` usa os mesmos retângulos para desenho e colisão.
+
+A câmera acompanha o jogador, limitada a (0, 0)–(1920, 1080), sem mostrar o
+exterior do cenário na resolução-base. O HUD fica em CanvasLayer, fixo na tela.
+O personagem é desenhado em código, com braços e pernas alternados enquanto
+se move, pose ociosa ao parar e orientação visual conforme a direção.
+A caminhada para também quando o personagem está bloqueado por uma parede.
+Esses gráficos são provisórios e não exigem assets externos.
+
+O teste `tests/movement_test.gd` exercita movimento nos quatro sentidos,
+parada, animação, ausência de diagonal/ganho de velocidade, colisão com
+obstáculo e bordas e limites da câmera. Execute com:
+
+```sh
+godot --headless --path game --script res://tests/movement_test.gd
+```
+
+A feature #5 parte das anteriores, ainda não integradas em `develop` ao
+iniciar esta implementação. Integre as features anteriores antes desta.
+
+Na issue #5 passaram a importação no Godot 4.7.2, os testes de navegação e
+movimentação e a exportação release Web. No Chromium 159 via Playwright,
+foram conferidos WASD, setas, colisão, acompanhamento da câmera, apresentação
+em 1280×720 e 640×360 e retorno ao menu após redimensionar, sem erros no
+console. Os arquivos de `build/` são excluídos da exportação para evitar
+incluir artefatos gerados no próprio pacote.
 
 ## Exportação Web
 
@@ -54,7 +94,8 @@ inválidas. O processo retorna código diferente de zero em caso de falha.
 Checklist manual após servir a exportação:
 
 1. Verificar o título e acionar Iniciar.
-2. Verificar a tela provisória e acionar Voltar ao menu.
+2. Mover o guardião com WASD e setas, testar obstáculos e bordas e observar
+   caminhada, parada e acompanhamento da câmera. Acionar Voltar ao menu.
 3. Repetir usando Tab e Enter/Espaço.
 4. Redimensionar em 1280×720, 640×360 e uma proporção diferente de 16:9;
    verificar centralização, barras e botões acessíveis.
