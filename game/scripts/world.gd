@@ -19,6 +19,7 @@ const SPAWN := Vector2(288, 544)
 @onready var ground: TileMapLayer = $Ground
 @onready var obstacles: TileMapLayer = $Obstacles
 @onready var progress = $Progress
+@onready var mill_sails: Node2D = $MillSails
 var interaction_enabled := true
 var active_point: Area2D
 var _last_prompt := ""
@@ -30,6 +31,7 @@ func _ready() -> void:
 	ground.tile_set = tiles
 	ground.collision_enabled = false
 	obstacles.tile_set = tiles
+	mill_sails.draw.connect(_draw_mill_sails)
 	_build_map()
 	progress.changed.connect(_apply_progress)
 	_apply_progress()
@@ -111,7 +113,11 @@ func _show_planks(amount: float) -> void:
 	queue_redraw()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if progress.is_completed(&"mill"):
+		mill_sails.rotate(delta * 0.8)
+	else:
+		mill_sails.rotation = 0.0
 	if not interaction_enabled:
 		return
 	var player := get_node_or_null("Player") as CharacterBody2D
@@ -197,15 +203,6 @@ func _draw() -> void:
 	for x in [1026, 1078]:
 		draw_rect(Rect2(x, 307, 13, 20), Color("304d49"))
 		draw_line(Vector2(x + 6, 307), Vector2(x + 6, 327), Color("dfc38a"), 2)
-	for angle in [PI / 4, PI * 3 / 4, PI * 5 / 4, PI * 7 / 4]:
-		var arm := Vector2.from_angle(angle)
-		var side := arm.orthogonal()
-		draw_line(Vector2(1056, 304), Vector2(1056, 304) + arm * 68, Color("684e39"), 5, true)
-		var sail := PackedVector2Array([Vector2(1056,304) + arm * 18, Vector2(1056,304) + arm * 64, Vector2(1056,304) + arm * 64 + side * 15, Vector2(1056,304) + arm * 18 + side * 10])
-		draw_colored_polygon(sail, Color("eee1b5"))
-		draw_polyline(sail, Color("bda578"), 1, true)
-	draw_circle(Vector2(1056, 304), 9, Color("73563e"))
-	draw_circle(Vector2(1056, 304), 4, Color("d9bb77"))
 	# Entrada rochosa e cristais luminosos.
 	draw_set_transform(Vector2(1696, 509), 0, Vector2(1, 0.25))
 	draw_circle(Vector2.ZERO, 90, Color(0.04, 0.12, 0.1, 0.35))
@@ -219,3 +216,17 @@ func _draw() -> void:
 		draw_circle(pos, 18, Color(0.35, 0.85, 0.8, 0.08))
 		draw_colored_polygon(PackedVector2Array([pos + Vector2(0,-17),pos + Vector2(7,-5),pos + Vector2(4,9),pos + Vector2(-5,7),pos + Vector2(-7,-5)]), Color("70c9bd"))
 		draw_line(pos + Vector2(0,-14), pos + Vector2(0,6), Color("c0eed7"), 2, true)
+
+
+func _draw_mill_sails() -> void:
+	for index in range(4):
+		var arm := Vector2.from_angle(PI / 4 + index * PI / 2)
+		var side := arm.orthogonal()
+		mill_sails.draw_line(Vector2.ZERO, arm * 68, Color("684e39"), 5, true)
+		var sail := PackedVector2Array([
+			arm * 18, arm * 64, arm * 64 + side * 15, arm * 18 + side * 10,
+		])
+		mill_sails.draw_colored_polygon(sail, Color("eee1b5"))
+		mill_sails.draw_polyline(sail, Color("bda578"), 1, true)
+	mill_sails.draw_circle(Vector2.ZERO, 9, Color("73563e"))
+	mill_sails.draw_circle(Vector2.ZERO, 4, Color("d9bb77"))

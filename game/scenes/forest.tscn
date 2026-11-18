@@ -48,3 +48,6 @@ point_id = &"crystal"
 dialogue_pages = Array[Resource]([ExtResource("crystal1"), ExtResource("crystal2"), ExtResource("crystal3")])
 title = "Caverna do Cristal"
 instruction = "Aqui está o Cristal do Conhecimento. Três pedestais aguardam sua ajuda."
+
+[node name="MillSails" type="Node2D" parent="."]
+position = Vector2(1056, 304)

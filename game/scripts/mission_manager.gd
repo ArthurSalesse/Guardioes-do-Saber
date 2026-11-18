@@ -13,6 +13,10 @@ const TITLES := {
 	&"mill": "O Moinho Encantado",
 	&"crystal": "O Cristal Perdido",
 }
+const PUZZLE_SKILLS := {
+	&"bridge": "addition",
+	&"mill": "resource_planning",
+}
 var avatar: StringName = &"boy"
 var session_id := ""
 var _states: Dictionary = {}
@@ -91,11 +95,11 @@ func count_puzzle_hints(mission: StringName) -> int:
 
 
 func record_puzzle_event(type: StringName, mission: StringName, details: Dictionary) -> void:
-	if mission != &"bridge" or get_state(mission) != State.ACTIVE:
+	if not PUZZLE_SKILLS.has(mission) or get_state(mission) != State.ACTIVE:
 		return
 	var data := details.duplicate(true)
-	data.puzzle_id = "bridge"
-	data.skill = "addition"
+	data.puzzle_id = String(mission)
+	data.skill = PUZZLE_SKILLS[mission]
 	data.elapsed_ms = Time.get_ticks_msec() - _started_at[mission]
 	_record(type, mission, data)
 

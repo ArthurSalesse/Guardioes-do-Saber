@@ -2,7 +2,7 @@ extends Control
 
 signal navigate(route: StringName)
 
-var _bridge_dialogue := false
+var _dialogue_mission: StringName
 
 
 func _ready() -> void:
@@ -23,13 +23,15 @@ func _ready() -> void:
 	$World.dialogue_requested.connect($HUD/Dialogue.show_dialogue)
 	$HUD/Dialogue.opened.connect(func(): _set_modal_active(true))
 	$HUD/Dialogue.closed.connect(func():
-		_bridge_dialogue = false
-		_set_modal_active($HUD/BridgePuzzle.visible))
+		_dialogue_mission = &""
+		_set_modal_active($HUD/BridgePuzzle.visible or $HUD/MillPuzzle.visible))
 	$World.interaction_requested.connect(func(point_id: StringName):
-		_bridge_dialogue = point_id == &"bridge" and not MissionManager.is_completed(&"bridge"))
-	$HUD/Dialogue.finished.connect(_open_bridge_puzzle)
+		_dialogue_mission = point_id)
+	$HUD/Dialogue.finished.connect(_open_mission_puzzle)
 	$HUD/BridgePuzzle.cancelled.connect(func(): _set_modal_active(false))
 	$HUD/BridgePuzzle.solved.connect(_rebuild_bridge)
+	$HUD/MillPuzzle.closed.connect(func(): _set_modal_active(false))
+	$HUD/MillPuzzle.solved.connect(func(): MissionManager.complete_mission(&"mill"))
 	$World.message_changed.connect(func(text: String): $HUD/Message.text = text)
 	$HUD/Panel/Content/Back.pressed.connect(func(): navigate.emit(&"menu"))
 	# Setas controlam o personagem; Tab ainda permite selecionar o botão.
@@ -39,9 +41,14 @@ func _ready() -> void:
 	$HUD/Panel/Content/Back.focus_neighbor_bottom = $HUD/Panel/Content/Back.get_path()
 
 
-func _open_bridge_puzzle() -> void:
-	if _bridge_dialogue:
-		$HUD/BridgePuzzle.open()
+func _open_mission_puzzle() -> void:
+	if MissionManager.get_state(_dialogue_mission) != MissionManager.State.ACTIVE:
+		return
+	match _dialogue_mission:
+		&"bridge":
+			$HUD/BridgePuzzle.open()
+		&"mill":
+			$HUD/MillPuzzle.open()
 
 
 func _rebuild_bridge() -> void:
