@@ -44,7 +44,10 @@ func run() -> void:
 	read_dialogue(dialogue)
 	check(puzzle.visible and not player.controls_enabled and puzzle.confirm.disabled, "Abre o primeiro pedestal sem seleção")
 	puzzle.hint_button.pressed.emit()
-	check(puzzle.hint_button.disabled and not puzzle.hint.text.is_empty(), "Registra dica do primeiro pedestal")
+	var first_hint: String = puzzle.hint.text
+	check(not puzzle.hint_button.disabled and not first_hint.is_empty(), "Primeira dica deixa disponível uma ajuda mais direta")
+	puzzle.hint_button.pressed.emit()
+	check(puzzle.hint_button.disabled and puzzle.hint.text != first_hint, "Segunda dica aprofunda a orientação")
 	puzzle.choices.get_child(0).button_pressed = true
 	puzzle.confirm.pressed.emit()
 	check("Confira" in puzzle.feedback.text, "Rejeita resposta de adição incorreta")
@@ -93,7 +96,7 @@ func run() -> void:
 	var solved := events.filter(func(event: Dictionary): return event.type == "PUZZLE_CORRECT")
 	check(solved.map(func(event: Dictionary): return event.data.puzzle_id) ==
 		["crystal_addition", "crystal_subtraction", "crystal_combination"], "Identifica cada pedestal no histórico")
-	check(manager.count_puzzle_hints(&"crystal", &"crystal_addition") == 1
+	check(manager.count_puzzle_hints(&"crystal", &"crystal_addition") == 2
 		and manager.count_puzzle_hints(&"crystal", &"crystal_subtraction") == 1, "Registra dicas por pedestal")
 	game.queue_free()
 	await process_frame

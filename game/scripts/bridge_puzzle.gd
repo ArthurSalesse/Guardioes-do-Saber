@@ -44,6 +44,7 @@ func open() -> void:
 	feedback.text = ""
 	var hint_count := MissionManager.count_puzzle_hints(MISSION)
 	hint.text = "" if hint_count == 0 else HINTS[mini(hint_count, HINTS.size()) - 1]
+	actions.get_node("Hint").text = "Pedir dica" if hint_count == 0 else "Outra dica"
 	actions.get_node("Hint").disabled = hint_count >= HINTS.size()
 	_update_total()
 	show()
@@ -85,7 +86,7 @@ func _confirm() -> void:
 	feedback.text = "Você acertou! Vamos reconstruir a ponte."
 	for button in piles.get_children() + actions.get_children():
 		button.disabled = true
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(1.0, false).timeout
 	hide()
 	solved.emit()
 
@@ -96,6 +97,7 @@ func _request_hint() -> void:
 		return
 	MissionManager.record_puzzle_event(&"HINT_REQUESTED", MISSION, {"hint_index": index + 1})
 	hint.text = HINTS[index]
+	actions.get_node("Hint").text = "Outra dica"
 	actions.get_node("Hint").disabled = index + 1 == HINTS.size()
 
 

@@ -11,6 +11,7 @@ var page_index := 0
 @onready var speaker: Label = $Panel/Margin/Content/Header/Speaker
 @onready var counter: Label = $Panel/Margin/Content/Header/Counter
 @onready var body: Label = $Panel/Margin/Content/Text
+@onready var previous_button: Button = $Panel/Margin/Content/Buttons/Previous
 @onready var next_button: Button = $Panel/Margin/Content/Buttons/Next
 @onready var replay_button: Button = $Panel/Margin/Content/Buttons/Replay
 @onready var audio: AudioStreamPlayer = $Audio
@@ -18,6 +19,7 @@ var page_index := 0
 
 func _ready() -> void:
 	hide()
+	previous_button.pressed.connect(previous)
 	next_button.pressed.connect(advance)
 	$Panel/Margin/Content/Buttons/Close.pressed.connect(close_dialogue)
 	replay_button.pressed.connect(replay_audio)
@@ -44,6 +46,7 @@ func _show_page() -> void:
 	audio.stop()
 	body.text = pages[page_index].text
 	counter.text = "%d / %d" % [page_index + 1, pages.size()]
+	previous_button.disabled = page_index == 0
 	next_button.text = "Concluir" if page_index == pages.size() - 1 else "Próximo"
 	audio.stream = pages[page_index].audio
 	replay_button.disabled = audio.stream == null
@@ -62,6 +65,14 @@ func advance() -> void:
 	else:
 		page_index += 1
 		_show_page()
+
+
+func previous() -> void:
+	if visible and page_index > 0:
+		page_index -= 1
+		_show_page()
+		if not previous_button.disabled:
+			previous_button.grab_focus()
 
 
 func replay_audio() -> void:

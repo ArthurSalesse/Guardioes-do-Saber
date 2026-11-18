@@ -72,6 +72,12 @@ autowrap_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 16
 
+[node name="Previous" type="Button" parent="Panel/Margin/Content/Buttons"]
+custom_minimum_size = Vector2(160, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Anterior"
+
 [node name="Next" type="Button" parent="Panel/Margin/Content/Buttons"]
 custom_minimum_size = Vector2(220, 52)
 layout_mode = 2
@@ -93,6 +99,6 @@ text = "Fechar (Esc)"
 [node name="Help" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "E: avançar · Tab: escolher botão · Enter/Espaço: confirmar · Esc: fechar"
+text = "E: avançar · Tab: escolher botão · Enter/Espaço: confirmar · Esc: fechar · P: pausar"
 
 [node name="Audio" type="AudioStreamPlayer" parent="."]

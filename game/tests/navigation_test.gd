@@ -34,7 +34,8 @@ func run() -> void:
 		check(main.current_route == &"game", "Confirmar avatar deve abrir o jogo")
 		check(main.get_node("Game/World/Player").avatar == avatar_id, "Personagem deve usar o avatar escolhido")
 		check(main.get_child_count() == 1, "Deve existir apenas uma tela ativa")
-		main.get_node("Game/HUD/Panel/Content/Back").pressed.emit()
+		main.get_node("Game/HUD/Panel/Content/Pause").pressed.emit()
+		main.get_node("Game/HUD/PauseMenu/Center/Panel/Content/Menu").pressed.emit()
 		await process_frame
 		await process_frame
 		check(main.current_route == &"menu", "Voltar deve abrir o menu")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/forest.tscn" id="2"]
@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" path="res://scenes/mill_puzzle.tscn" id="6"]
 
 [ext_resource type="PackedScene" path="res://scenes/crystal_puzzle.tscn" id="7"]
+
+[ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_compact_hud"]
 content_margin_left = 12.0
@@ -63,15 +65,15 @@ text = "Floresta dos Números"
 
 [node name="Instructions" type="Label" parent="HUD/Panel/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "Explore com as setas ou WASD."
+theme_override_font_sizes/font_size = 18
+text = "Setas ou WASD · E para interagir"
 
-[node name="Back" type="Button" parent="HUD/Panel/Content"]
-custom_minimum_size = Vector2(120, 28)
+[node name="Pause" type="Button" parent="HUD/Panel/Content"]
+custom_minimum_size = Vector2(120, 38)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 14
-text = "Voltar ao menu"
+theme_override_font_sizes/font_size = 18
+text = "Pausar (P)"
 
 [node name="Message" type="Label" parent="HUD"]
 offset_left = 24.0
@@ -88,16 +90,25 @@ text = "Procure os sinais de ! e pressione E para ler."
 
 
 [node name="MissionStatus" type="PanelContainer" parent="HUD"]
-offset_left = 934.0
+offset_left = 850.0
 offset_top = 16.0
 offset_right = 1264.0
 offset_bottom = 110.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_compact_hud")
 
-[node name="Text" type="Label" parent="HUD/MissionStatus"]
+[node name="Content" type="VBoxContainer" parent="HUD/MissionStatus"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_constants/separation = 8
+
+[node name="Objective" type="Label" parent="HUD/MissionStatus/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+autowrap_mode = 2
+
+[node name="Text" type="Label" parent="HUD/MissionStatus/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
 autowrap_mode = 2
 
 [node name="Dialogue" parent="HUD" instance=ExtResource("4")]
@@ -107,3 +118,5 @@ autowrap_mode = 2
 [node name="MillPuzzle" parent="HUD" instance=ExtResource("6")]
 
 [node name="CrystalPuzzle" parent="HUD" instance=ExtResource("7")]
+
+[node name="PauseMenu" parent="HUD" instance=ExtResource("8")]

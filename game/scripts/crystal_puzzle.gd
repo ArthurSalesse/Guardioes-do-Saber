@@ -9,19 +9,19 @@ const PEDESTALS := [
 		"id": &"crystal_addition", "title": "Adição",
 		"question": "Você tem 7 cristais e encontra mais 5. Quantos cristais tem agora?",
 		"choices": [10, 11, 12, 13], "target": 12,
-		"hint": "Comece no 7 e conte mais cinco.",
+		"hints": ["Qual operação usamos quando juntamos dois grupos?", "Comece no 7 e conte mais cinco."],
 	},
 	{
 		"id": &"crystal_subtraction", "title": "Subtração",
 		"question": "Um mecanismo tem 18 unidades de energia e usa 9. Quantas restam?",
 		"choices": [7, 8, 9, 10], "target": 9,
-		"hint": "Conte de 9 até 18. Quantas unidades você acrescentou?",
+		"hints": ["Qual operação usamos para tirar a energia consumida?", "Conte de 9 até 18. Quantas unidades você acrescentou?"],
 	},
 	{
 		"id": &"crystal_combination", "title": "Combinação",
 		"question": "Escolha cristais de valores diferentes que somem 15.",
 		"choices": [2, 4, 6, 7, 9], "target": 15,
-		"hint": "Escolha um cristal e calcule quanto falta para 15.",
+		"hints": ["Escolha um cristal e calcule quanto falta para 15.", "Se você escolher o cristal de 9, procure um que valha 6."],
 	},
 ]
 
@@ -71,8 +71,7 @@ func _show_pedestal() -> void:
 	var multiple := _index == PEDESTALS.size() - 1
 	heading.text = "Pedestal %d de %d · %s" % [_index + 1, PEDESTALS.size(), pedestal.title]
 	question.text = pedestal.question
-	hint_button.disabled = MissionManager.count_puzzle_hints(MISSION, pedestal.id) > 0
-	hint.text = pedestal.hint if hint_button.disabled else ""
+	_update_hint(pedestal, MissionManager.count_puzzle_hints(MISSION, pedestal.id))
 	confirm.text = "Confirmar"
 	total.visible = multiple
 	for child in choices.get_children():
@@ -149,9 +148,15 @@ func _request_hint() -> void:
 	if not visible or _restoring or hint_button.disabled:
 		return
 	var pedestal: Dictionary = PEDESTALS[_index]
-	MissionManager.record_puzzle_event(&"HINT_REQUESTED", MISSION, {"hint_index": 1}, pedestal.id)
-	hint.text = pedestal.hint
-	hint_button.disabled = true
+	var count := MissionManager.count_puzzle_hints(MISSION, pedestal.id) + 1
+	MissionManager.record_puzzle_event(&"HINT_REQUESTED", MISSION, {"hint_index": count}, pedestal.id)
+	_update_hint(pedestal, count)
+
+
+func _update_hint(pedestal: Dictionary, count: int) -> void:
+	hint.text = "" if count == 0 else pedestal.hints[mini(count, pedestal.hints.size()) - 1]
+	hint_button.text = "Pedir dica" if count == 0 else "Outra dica"
+	hint_button.disabled = count >= pedestal.hints.size()
 
 
 func _restore() -> void:
