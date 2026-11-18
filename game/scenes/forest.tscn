@@ -1,0 +1,53 @@
+[gd_scene load_steps=16 format=3]
+[ext_resource type="Script" path="res://scripts/world.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/mission_progress.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/interaction_point.tscn" id="3"]
+[ext_resource type="Resource" path="res://dialogues/welcome_1.tres" id="welcome1"]
+[ext_resource type="Resource" path="res://dialogues/welcome_2.tres" id="welcome2"]
+[ext_resource type="Resource" path="res://dialogues/welcome_3.tres" id="welcome3"]
+[ext_resource type="Resource" path="res://dialogues/bridge_1.tres" id="bridge1"]
+[ext_resource type="Resource" path="res://dialogues/bridge_2.tres" id="bridge2"]
+[ext_resource type="Resource" path="res://dialogues/bridge_3.tres" id="bridge3"]
+[ext_resource type="Resource" path="res://dialogues/mill_1.tres" id="mill1"]
+[ext_resource type="Resource" path="res://dialogues/mill_2.tres" id="mill2"]
+[ext_resource type="Resource" path="res://dialogues/mill_3.tres" id="mill3"]
+[ext_resource type="Resource" path="res://dialogues/crystal_1.tres" id="crystal1"]
+[ext_resource type="Resource" path="res://dialogues/crystal_2.tres" id="crystal2"]
+[ext_resource type="Resource" path="res://dialogues/crystal_3.tres" id="crystal3"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1")
+[node name="Ground" type="TileMapLayer" parent="."]
+z_index = -2
+[node name="Obstacles" type="TileMapLayer" parent="."]
+z_index = -1
+[node name="Progress" type="Node" parent="."]
+script = ExtResource("2")
+[node name="Points" type="Node2D" parent="."]
+[node name="Welcome" parent="Points" instance=ExtResource("3")]
+position = Vector2(352, 544)
+point_id = &"welcome"
+dialogue_pages = Array[Resource]([ExtResource("welcome1"), ExtResource("welcome2"), ExtResource("welcome3")])
+title = "Clareira inicial"
+instruction = "Bem-vindo! Siga o caminho até Tobi, perto da ponte."
+[node name="Bridge" parent="Points" instance=ExtResource("3")]
+position = Vector2(544, 544)
+point_id = &"bridge"
+dialogue_pages = Array[Resource]([ExtResource("bridge1"), ExtResource("bridge2"), ExtResource("bridge3")])
+title = "Tobi · Ponte"
+instruction = "A ponte precisa de 12 tábuas. Ajude Tobi na missão A Ponte Quebrada."
+[node name="Mill" parent="Points" instance=ExtResource("3")]
+position = Vector2(1056, 416)
+point_id = &"mill"
+dialogue_pages = Array[Resource]([ExtResource("mill1"), ExtResource("mill2"), ExtResource("mill3")])
+title = "Flora · Moinho"
+instruction = "O moinho parou! Ajude Flora a distribuir 20 unidades de energia."
+[node name="Cave" parent="Points" instance=ExtResource("3")]
+position = Vector2(1632, 544)
+point_id = &"crystal"
+dialogue_pages = Array[Resource]([ExtResource("crystal1"), ExtResource("crystal2"), ExtResource("crystal3")])
+title = "Caverna do Cristal"
+instruction = "Aqui está o Cristal do Conhecimento. Três pedestais aguardam sua ajuda."
+
+[node name="MillSails" type="Node2D" parent="."]
+position = Vector2(1056, 304)

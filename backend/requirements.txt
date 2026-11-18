@@ -1,0 +1,9 @@
+# Gerado a partir de requirements.in; versões validadas em Python 3.14.
+asgiref==3.13.0
+Django==5.2.19
+django-cors-headers==4.9.0
+djangorestframework==3.16.1
+psycopg==3.3.9
+psycopg-binary==3.3.9
+python-dotenv==1.2.4
+sqlparse==0.6.1
