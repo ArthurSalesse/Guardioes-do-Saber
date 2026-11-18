@@ -15,11 +15,15 @@ const GATE := 6
 const BRIDGE_CELLS: Array[Vector2i] = [Vector2i(20, 16), Vector2i(21, 16), Vector2i(20, 17), Vector2i(21, 17)]
 const CAVE_GATE: Array[Vector2i] = [Vector2i(40, 16), Vector2i(40, 17)]
 const SPAWN := Vector2(288, 544)
+const CRYSTALS: Array[Vector2] = [Vector2(1640, 466), Vector2(1748, 481), Vector2(1728, 420)]
+const ForestArt = preload("res://scripts/forest_art.gd")
+const ForestMotion = preload("res://scripts/forest_motion.gd")
 
 @onready var ground: TileMapLayer = $Ground
 @onready var obstacles: TileMapLayer = $Obstacles
 @onready var progress = $Progress
 @onready var mill_sails: Node2D = $MillSails
+var _motion: ForestMotion
 var interaction_enabled := true
 var active_point: Area2D
 var _last_prompt := ""
@@ -33,6 +37,13 @@ func _ready() -> void:
 	obstacles.tile_set = tiles
 	mill_sails.draw.connect(_draw_mill_sails)
 	_build_map()
+	var art := ForestArt.new()
+	art.z_index = -1
+	add_child(art)
+	art.configure(obstacles)
+	_motion = ForestMotion.new()
+	_motion.crystals = CRYSTALS
+	add_child(_motion)
 	progress.changed.connect(_apply_progress)
 	_apply_progress()
 
@@ -54,6 +65,8 @@ func _make_tileset() -> TileSet:
 			for variant in range(1, 5):
 				atlas.create_alternative_tile(coords, variant)
 				atlas.get_tile_data(coords, variant).modulate = Color(1.0 - variant * 0.018, 1.0 - variant * 0.012, 1.0 - variant * 0.008)
+		if index == TREE:
+			atlas.get_tile_data(coords, 0).modulate.a = 0.0
 		if index in [WATER, TREE, ROCK, GATE]:
 			var data := atlas.get_tile_data(coords, 0)
 			data.set_collision_polygons_count(0, 1)
@@ -87,6 +100,7 @@ func _build_map() -> void:
 
 
 func _apply_progress() -> void:
+	_motion.bridge_open = progress.is_completed(&"bridge")
 	for cell in BRIDGE_CELLS:
 		if progress.is_completed(&"bridge"):
 			ground.set_cell(cell, 0, Vector2i(BRIDGE, 0))
@@ -175,17 +189,6 @@ func _draw() -> void:
 			var plank := Rect2(640 + index * 64.0 / 12.0, 512 - drop, 64.0 / 12.0, 64)
 			draw_rect(plank, Color("ac794f"))
 			draw_line(plank.position, plank.position + Vector2(0, 64), Color("64452f"))
-	# Pequenos detalhes determinísticos: não alteram colisões ou objetivos.
-	for i in range(320):
-		var cell := Vector2i(2 + (i * 17) % 56, 2 + (i * 11) % 30)
-		if cell.y in [15, 16, 17, 18] or cell.x in [20, 21, 40] or obstacles.get_cell_source_id(cell) != -1:
-			continue
-		var pos := Vector2(cell * 32) + Vector2(8 + i % 15, 10 + i % 12)
-		if i % 4 == 0:
-			draw_line(pos, pos + Vector2(0, -6), Color("80a666"), 1, true)
-			draw_circle(pos + Vector2(0, -7), 2.1, Color("e6cb84") if i % 8 == 0 else Color("c9a7ae"))
-		else:
-			draw_arc(pos, 4, PI, TAU, 6, Color("58845a"), 1, true)
 	# Moinho de pedra e madeira com telhado, janelas e velas.
 	draw_set_transform(Vector2(1056, 375), 0, Vector2(1, 0.3))
 	draw_circle(Vector2.ZERO, 73, Color(0.04, 0.12, 0.1, 0.3))
@@ -212,7 +215,7 @@ func _draw() -> void:
 	draw_colored_polygon(PackedVector2Array([Vector2(1707,366),Vector2(1758,405),Vector2(1776,512),Vector2(1730,486),Vector2(1716,415)]), Color("455f60"))
 	draw_circle(Vector2(1696, 463), 44, Color("112f36"))
 	draw_rect(Rect2(1652, 463, 88, 49), Color("112f36"))
-	for pos in [Vector2(1640, 466), Vector2(1748, 481), Vector2(1728, 420)]:
+	for pos in CRYSTALS:
 		draw_circle(pos, 18, Color(0.35, 0.85, 0.8, 0.08))
 		draw_colored_polygon(PackedVector2Array([pos + Vector2(0,-17),pos + Vector2(7,-5),pos + Vector2(4,9),pos + Vector2(-5,7),pos + Vector2(-7,-5)]), Color("70c9bd"))
 		draw_line(pos + Vector2(0,-14), pos + Vector2(0,6), Color("c0eed7"), 2, true)
@@ -228,5 +231,7 @@ func _draw_mill_sails() -> void:
 		])
 		mill_sails.draw_colored_polygon(sail, Color("eee1b5"))
 		mill_sails.draw_polyline(sail, Color("bda578"), 1, true)
+		for rib in [29, 41, 53]:
+			mill_sails.draw_line(arm * rib, arm * rib + side * lerpf(10.0, 15.0, (rib - 18.0) / 46.0), Color("c0a274"), 1.4, true)
 	mill_sails.draw_circle(Vector2.ZERO, 9, Color("73563e"))
 	mill_sails.draw_circle(Vector2.ZERO, 4, Color("d9bb77"))
