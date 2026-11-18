@@ -1,0 +1,76 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/bridge_puzzle.gd" id="1"]
+
+[node name="BridgePuzzle" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.025, 0.09, 0.08, 0.7)
+mouse_filter = 2
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "A Ponte Quebrada"
+
+[node name="Instructions" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "Junte pilhas para obter exatamente 12 tábuas."
+
+[node name="Piles" type="HBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Total" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Feedback" type="Label" parent="Center/Panel/Content"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Center/Panel/Content"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Back" type="Button" parent="Center/Panel/Content/Actions"]
+layout_mode = 2
+text = "Voltar"
+
+[node name="Hint" type="Button" parent="Center/Panel/Content/Actions"]
+layout_mode = 2
+text = "Pedir dica"
+
+[node name="Confirm" type="Button" parent="Center/Panel/Content/Actions"]
+layout_mode = 2
+text = "Confirmar"
