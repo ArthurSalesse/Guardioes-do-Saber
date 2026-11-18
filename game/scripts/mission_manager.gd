@@ -16,6 +16,7 @@ const TITLES := {
 var avatar: StringName = &"boy"
 var session_id := ""
 var _states: Dictionary = {}
+var _started_at: Dictionary = {}
 var _events: Array[Dictionary] = []
 
 
@@ -28,6 +29,7 @@ func new_session() -> void:
 	session_id = Crypto.new().generate_random_bytes(16).hex_encode()
 	_states.clear()
 	_events.clear()
+	_started_at.clear()
 	for mission in ORDER:
 		_states[mission] = State.NOT_STARTED
 	changed.emit()
@@ -59,6 +61,7 @@ func start_mission(mission: StringName) -> bool:
 	if not can_start(mission):
 		return false
 	_states[mission] = State.ACTIVE
+	_started_at[mission] = Time.get_ticks_msec()
 	_record(&"MISSION_STARTED", mission)
 	mission_started.emit(mission)
 	changed.emit()
@@ -79,7 +82,25 @@ func get_events() -> Array[Dictionary]:
 	return _events.duplicate(true)
 
 
-func _record(type: StringName, mission: StringName) -> void:
+func count_puzzle_hints(mission: StringName) -> int:
+	var count := 0
+	for event in _events:
+		if event.type == "HINT_REQUESTED" and event.mission_id == String(mission):
+			count += 1
+	return count
+
+
+func record_puzzle_event(type: StringName, mission: StringName, details: Dictionary) -> void:
+	if mission != &"bridge" or get_state(mission) != State.ACTIVE:
+		return
+	var data := details.duplicate(true)
+	data.puzzle_id = "bridge"
+	data.skill = "addition"
+	data.elapsed_ms = Time.get_ticks_msec() - _started_at[mission]
+	_record(type, mission, data)
+
+
+func _record(type: StringName, mission: StringName, data: Dictionary = {}) -> void:
 	var event := {
 		"id": "%s:%d" % [session_id, _events.size() + 1],
 		"session_id": session_id,
@@ -87,5 +108,7 @@ func _record(type: StringName, mission: StringName) -> void:
 		"mission_id": String(mission),
 		"occurred_at": Time.get_datetime_string_from_system(true) + "Z",
 	}
+	if not data.is_empty():
+		event.data = data
 	_events.append(event)
 	event_recorded.emit(event.duplicate(true))

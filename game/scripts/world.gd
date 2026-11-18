@@ -22,6 +22,7 @@ const SPAWN := Vector2(288, 544)
 var interaction_enabled := true
 var active_point: Area2D
 var _last_prompt := ""
+var _placed_planks := 0.0
 
 
 func _ready() -> void:
@@ -85,16 +86,28 @@ func _build_map() -> void:
 
 func _apply_progress() -> void:
 	for cell in BRIDGE_CELLS:
-		ground.set_cell(cell, 0, Vector2i(BRIDGE, 0))
 		if progress.is_completed(&"bridge"):
+			ground.set_cell(cell, 0, Vector2i(BRIDGE, 0))
 			obstacles.erase_cell(cell)
 		else:
-			obstacles.set_cell(cell, 0, Vector2i(GATE, 0))
+			ground.set_cell(cell, 0, Vector2i(PATH, 0))
+			obstacles.set_cell(cell, 0, Vector2i(WATER, 0))
 	for cell in CAVE_GATE:
 		if progress.is_completed(&"mill"):
 			obstacles.erase_cell(cell)
 		else:
 			obstacles.set_cell(cell, 0, Vector2i(GATE, 0))
+	queue_redraw()
+
+
+func rebuild_bridge() -> void:
+	var animation := create_tween()
+	animation.tween_method(_show_planks, 0.0, 12.0, 1.2)
+	await animation.finished
+
+
+func _show_planks(amount: float) -> void:
+	_placed_planks = amount
 	queue_redraw()
 
 
@@ -150,6 +163,12 @@ func interact() -> bool:
 
 
 func _draw() -> void:
+	if not progress.is_completed(&"bridge"):
+		for index in range(ceili(_placed_planks)):
+			var drop := (1.0 - clampf(_placed_planks - index, 0.0, 1.0)) * 22.0
+			var plank := Rect2(640 + index * 64.0 / 12.0, 512 - drop, 64.0 / 12.0, 64)
+			draw_rect(plank, Color("ac794f"))
+			draw_line(plank.position, plank.position + Vector2(0, 64), Color("64452f"))
 	# Pequenos detalhes determinísticos: não alteram colisões ou objetivos.
 	for i in range(320):
 		var cell := Vector2i(2 + (i * 17) % 56, 2 + (i * 11) % 30)

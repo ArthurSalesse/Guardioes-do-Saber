@@ -2,6 +2,7 @@ extends Control
 
 signal opened
 signal closed
+signal finished
 signal page_changed(index: int)
 
 var pages: Array[Resource] = []
@@ -56,6 +57,7 @@ func advance() -> void:
 	if not visible:
 		return
 	if page_index + 1 >= pages.size():
+		finished.emit()
 		close_dialogue()
 	else:
 		page_index += 1

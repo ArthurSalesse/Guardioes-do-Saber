@@ -2,6 +2,8 @@ extends Control
 
 signal navigate(route: StringName)
 
+var _bridge_dialogue := false
+
 
 func _ready() -> void:
 	var art_theme := preload("res://scripts/art_theme.gd").create()
@@ -19,8 +21,15 @@ func _ready() -> void:
 	MissionManager.changed.connect(_update_mission_status)
 	_update_mission_status()
 	$World.dialogue_requested.connect($HUD/Dialogue.show_dialogue)
-	$HUD/Dialogue.opened.connect(func(): _set_dialogue_active(true))
-	$HUD/Dialogue.closed.connect(func(): _set_dialogue_active(false))
+	$HUD/Dialogue.opened.connect(func(): _set_modal_active(true))
+	$HUD/Dialogue.closed.connect(func():
+		_bridge_dialogue = false
+		_set_modal_active($HUD/BridgePuzzle.visible))
+	$World.interaction_requested.connect(func(point_id: StringName):
+		_bridge_dialogue = point_id == &"bridge" and not MissionManager.is_completed(&"bridge"))
+	$HUD/Dialogue.finished.connect(_open_bridge_puzzle)
+	$HUD/BridgePuzzle.cancelled.connect(func(): _set_modal_active(false))
+	$HUD/BridgePuzzle.solved.connect(_rebuild_bridge)
 	$World.message_changed.connect(func(text: String): $HUD/Message.text = text)
 	$HUD/Panel/Content/Back.pressed.connect(func(): navigate.emit(&"menu"))
 	# Setas controlam o personagem; Tab ainda permite selecionar o botão.
@@ -30,7 +39,18 @@ func _ready() -> void:
 	$HUD/Panel/Content/Back.focus_neighbor_bottom = $HUD/Panel/Content/Back.get_path()
 
 
-func _set_dialogue_active(active: bool) -> void:
+func _open_bridge_puzzle() -> void:
+	if _bridge_dialogue:
+		$HUD/BridgePuzzle.open()
+
+
+func _rebuild_bridge() -> void:
+	await $World.rebuild_bridge()
+	MissionManager.complete_mission(&"bridge")
+	_set_modal_active(false)
+
+
+func _set_modal_active(active: bool) -> void:
 	$World.interaction_enabled = not active
 	$World/Player.controls_enabled = not active
 	$HUD/Panel/Content/Back.disabled = active
