@@ -14,8 +14,13 @@ const TITLES := {
 	&"crystal": "O Cristal Perdido",
 }
 const PUZZLE_SKILLS := {
-	&"bridge": "addition",
-	&"mill": "resource_planning",
+	&"bridge": {&"bridge": "addition"},
+	&"mill": {&"mill": "resource_planning"},
+	&"crystal": {
+		&"crystal_addition": "addition",
+		&"crystal_subtraction": "subtraction",
+		&"crystal_combination": "addition",
+	},
 }
 var avatar: StringName = &"boy"
 var session_id := ""
@@ -77,6 +82,8 @@ func complete_mission(mission: StringName) -> bool:
 		return false
 	_states[mission] = State.COMPLETED
 	_record(&"MISSION_COMPLETED", mission)
+	if mission == ORDER.back():
+		_record(&"SESSION_COMPLETED", mission)
 	mission_completed.emit(mission)
 	changed.emit()
 	return true
@@ -86,20 +93,30 @@ func get_events() -> Array[Dictionary]:
 	return _events.duplicate(true)
 
 
-func count_puzzle_hints(mission: StringName) -> int:
+func count_puzzle_hints(mission: StringName, puzzle: StringName = &"") -> int:
 	var count := 0
+	var puzzle_id := String(mission if puzzle.is_empty() else puzzle)
 	for event in _events:
-		if event.type == "HINT_REQUESTED" and event.mission_id == String(mission):
+		if event.type == "HINT_REQUESTED" and event.mission_id == String(mission) and event.data.puzzle_id == puzzle_id:
 			count += 1
 	return count
 
 
-func record_puzzle_event(type: StringName, mission: StringName, details: Dictionary) -> void:
-	if not PUZZLE_SKILLS.has(mission) or get_state(mission) != State.ACTIVE:
+func is_puzzle_solved(mission: StringName, puzzle: StringName) -> bool:
+	for event in _events:
+		if event.type == "PUZZLE_CORRECT" and event.mission_id == String(mission) and event.data.puzzle_id == String(puzzle):
+			return true
+	return false
+
+
+func record_puzzle_event(type: StringName, mission: StringName, details: Dictionary, puzzle: StringName = &"") -> void:
+	var puzzle_id := mission if puzzle.is_empty() else puzzle
+	var skills: Dictionary = PUZZLE_SKILLS.get(mission, {})
+	if not skills.has(puzzle_id) or get_state(mission) != State.ACTIVE:
 		return
 	var data := details.duplicate(true)
-	data.puzzle_id = String(mission)
-	data.skill = PUZZLE_SKILLS[mission]
+	data.puzzle_id = String(puzzle_id)
+	data.skill = skills[puzzle_id]
 	data.elapsed_ms = Time.get_ticks_msec() - _started_at[mission]
 	_record(type, mission, data)
 

@@ -32,6 +32,7 @@ func run() -> void:
 		for frame in range(4):
 			await physics_frame
 		await process_frame
+		await process_frame
 		check(world.interact(), "Interage com Tobi")
 		dialogue.close_dialogue()
 		check(not puzzle.visible and player.controls_enabled, "Fechar a conversa permite sair")

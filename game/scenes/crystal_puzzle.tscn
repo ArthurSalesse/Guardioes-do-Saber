@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/crystal_puzzle.gd" id="1"]
+
+[node name="CrystalPuzzle" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.025, 0.09, 0.08, 0.7)
+mouse_filter = 2
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(740, 0)
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "O Cristal Perdido"
+
+[node name="Pedestal" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+
+[node name="Question" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Choices" type="HBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Total" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+
+[node name="Feedback" type="Label" parent="Center/Panel/Content"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Center/Panel/Content"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Back" type="Button" parent="Center/Panel/Content/Actions"]
+layout_mode = 2
+text = "Voltar"
+
+[node name="Hint" type="Button" parent="Center/Panel/Content/Actions"]
+layout_mode = 2
+text = "Pedir dica"
+
+[node name="Confirm" type="Button" parent="Center/Panel/Content/Actions"]
+layout_mode = 2
+text = "Confirmar"
+
+[node name="Restoration" type="Control" parent="Center/Panel"]
+visible = false
+custom_minimum_size = Vector2(0, 332)
+layout_mode = 2
+
+[node name="Status" type="Label" parent="Center/Panel/Restoration"]
+layout_mode = 1
+anchor_right = 1.0
+offset_top = 218.0
+offset_bottom = 252.0
+theme_override_font_sizes/font_size = 30
+text = "Restaurando o Cristal do Conhecimento…"
+horizontal_alignment = 1
+
+[node name="Finish" type="Button" parent="Center/Panel/Restoration"]
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_right = 120.0
+offset_top = 269.0
+offset_bottom = 323.0
+text = "Voltar à floresta"

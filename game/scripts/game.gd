@@ -24,7 +24,7 @@ func _ready() -> void:
 	$HUD/Dialogue.opened.connect(func(): _set_modal_active(true))
 	$HUD/Dialogue.closed.connect(func():
 		_dialogue_mission = &""
-		_set_modal_active($HUD/BridgePuzzle.visible or $HUD/MillPuzzle.visible))
+		_set_modal_active($HUD/BridgePuzzle.visible or $HUD/MillPuzzle.visible or $HUD/CrystalPuzzle.visible))
 	$World.interaction_requested.connect(func(point_id: StringName):
 		_dialogue_mission = point_id)
 	$HUD/Dialogue.finished.connect(_open_mission_puzzle)
@@ -32,6 +32,8 @@ func _ready() -> void:
 	$HUD/BridgePuzzle.solved.connect(_rebuild_bridge)
 	$HUD/MillPuzzle.closed.connect(func(): _set_modal_active(false))
 	$HUD/MillPuzzle.solved.connect(func(): MissionManager.complete_mission(&"mill"))
+	$HUD/CrystalPuzzle.closed.connect(func(): _set_modal_active(false))
+	$HUD/CrystalPuzzle.restored.connect(func(): MissionManager.complete_mission(&"crystal"))
 	$World.message_changed.connect(func(text: String): $HUD/Message.text = text)
 	$HUD/Panel/Content/Back.pressed.connect(func(): navigate.emit(&"menu"))
 	# Setas controlam o personagem; Tab ainda permite selecionar o botão.
@@ -49,6 +51,8 @@ func _open_mission_puzzle() -> void:
 			$HUD/BridgePuzzle.open()
 		&"mill":
 			$HUD/MillPuzzle.open()
+		&"crystal":
+			$HUD/CrystalPuzzle.open()
 
 
 func _rebuild_bridge() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/forest.tscn" id="2"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/bridge_puzzle.tscn" id="5"]
 
 [ext_resource type="PackedScene" path="res://scenes/mill_puzzle.tscn" id="6"]
+
+[ext_resource type="PackedScene" path="res://scenes/crystal_puzzle.tscn" id="7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_compact_hud"]
 content_margin_left = 12.0
@@ -103,3 +105,5 @@ autowrap_mode = 2
 [node name="BridgePuzzle" parent="HUD" instance=ExtResource("5")]
 
 [node name="MillPuzzle" parent="HUD" instance=ExtResource("6")]
+
+[node name="CrystalPuzzle" parent="HUD" instance=ExtResource("7")]

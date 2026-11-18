@@ -43,7 +43,7 @@ func run() -> void:
 		check(not manager.complete_mission(mission), "Repetir conclusão não emite outro evento")
 	check(starts == manager.ORDER and ends == manager.ORDER, "Sinais uma vez por transição")
 	var events: Array[Dictionary] = manager.get_events()
-	check(events.size() == 6 and observed.size() == 6, "Dois eventos por missão")
+	check(events.size() == 7 and observed.size() == 7, "Dois eventos por missão e conclusão da aventura")
 	var identifiers := {}
 	for index in range(events.size()):
 		var event := events[index]
@@ -51,7 +51,8 @@ func run() -> void:
 		check(not identifiers.has(event.id), "Identificador de evento único")
 		identifiers[event.id] = true
 		check(event.occurred_at.ends_with("Z"), "Momento de ocorrência em UTC")
-		check(event.type == ("MISSION_STARTED" if index % 2 == 0 else "MISSION_COMPLETED"), "Ordem dos eventos")
+		var expected := "MISSION_STARTED" if index % 2 == 0 else "MISSION_COMPLETED"
+		check(event.type == ("SESSION_COMPLETED" if index == 6 else expected), "Ordem dos eventos")
 	events[0]["type"] = "mutated"
 	observed[0]["type"] = "mutated"
 	check(manager.get_events()[0].type == "MISSION_STARTED", "Consumidores não alteram histórico interno")
